@@ -1,0 +1,94 @@
+# OpenClaw Docker 镜像
+FROM node:24-slim
+
+# 从 Python 官方镜像拷贝 Python 3.13
+COPY --from=python:3.13-slim-bookworm /usr/local /usr/local
+
+# 设置工作目录
+WORKDIR /app
+
+# 设置环境变量
+ENV BUN_INSTALL="/usr/local" \
+    PATH="/usr/local/bin:$PATH" \
+    DEBIAN_FRONTEND=noninteractive
+
+# 1. 合并系统依赖安装与全局工具安装，并清理缓存
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    file \
+    bash \
+    ca-certificates \
+    chromium \
+    curl \
+    docker.io \
+    build-essential \
+    ffmpeg \
+    fonts-liberation \
+    fonts-noto-cjk \
+    fonts-noto-color-emoji \
+    git \
+    gosu \
+    jq \
+    locales \
+    openssh-client \
+    procps \
+    socat \
+    tini \
+    unzip && \
+    sed -i 's/^# *en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen && \
+    # update-locale 在部分 slim 基础镜像中会返回 invalid locale settings，这里改为直接写入默认 locale 配置
+    printf 'LANG=en_US.UTF-8\nLANGUAGE=en_US:en\nLC_ALL=en_US.UTF-8\n' > /etc/default/locale && \
+    # 配置 git 使用 HTTPS 替代 SSH
+    git config --system url."https://github.com/".insteadOf ssh://git@github.com/ && \
+    # 设置 npm 镜像并安装全局包
+    npm config set registry https://registry.npmmirror.com && \
+    npm install -g openclaw@2026.5.12 opencode-ai@latest clawhub playwright playwright-extra puppeteer-extra-plugin-stealth @steipete/bird && \
+    # 安装 bun、uv 和 qmd
+    curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash && \
+    curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh && \
+    # 建立 python3 -> python 链接并安装 websockify
+    ln -sf /usr/local/bin/python3 /usr/local/bin/python && \
+    /usr/local/bin/python3 -m pip install --no-cache-dir websockify && \
+    npm install -g @tobilu/qmd && \
+    # 安装 Playwright 浏览器依赖
+    npx playwright install chromium --with-deps && \
+    # 清理 apt 缓存
+    apt-get purge -y --auto-remove && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /root/.npm /root/.cache
+
+
+USER node
+ENV HOME=/home/node
+WORKDIR /home/node
+
+# 安装linuxbrew（Homebrew 的 Linux 版本），并配置环境变量
+RUN mkdir -p /home/node/.linuxbrew/Homebrew && \
+    git clone --depth 1 https://github.com/Homebrew/brew /home/node/.linuxbrew/Homebrew && \
+    mkdir -p /home/node/.linuxbrew/bin && \
+    ln -s /home/node/.linuxbrew/Homebrew/bin/brew /home/node/.linuxbrew/bin/brew && \
+    chown -R node:node /home/node/.linuxbrew && \
+    chmod -R g+rwX /home/node/.linuxbrew
+
+    
+# 设置环境变量
+ENV HOME=/home/node \
+    TERM=xterm-256color \
+    NODE_PATH=/usr/local/lib/node_modules \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8 \
+    NODE_ENV=production \
+    PATH="/home/node/.linuxbrew/bin:/home/node/.linuxbrew/sbin:/usr/local/lib/node_modules/.bin:${PATH}" \
+    HOMEBREW_NO_AUTO_UPDATE=1 \
+    HOMEBREW_NO_INSTALL_CLEANUP=1
+
+# 暴露端口
+EXPOSE 18789
+
+# 设置工作目录为 home
+WORKDIR /home/node
+
+# 使用初始化脚本作为入口点
+# ENTRYPOINT ["/usr/local/bin/openclaw"]

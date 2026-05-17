@@ -1,0 +1,20 @@
+services:
+  openclaw-init:
+    build: .
+    volumes:
+      - ./openclaw:/home/node/.openclaw
+      - ./bootstrap:/bootstrap
+    command: bash /bootstrap/extensions_init.sh
+
+  openclaw:
+    build: .
+    volumes:
+      - ./openclaw:/home/node/.openclaw
+    depends_on:
+      openclaw-init:
+        condition: service_completed_successfully  
+    command: openclaw gateway
+    restart: unless-stopped
+    ports:
+      - "18789:18789"
+      - "18791:18791"
