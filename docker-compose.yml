@@ -1,10 +1,7 @@
 services:
   openclaw-init:
     image:  ghcr.io/ider-zh/openclaw-docker:main
-    build:
-      context: .
-      args:
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION}
+    build: .
     env_file:
       - .env
     volumes:
@@ -14,10 +11,7 @@ services:
 
   openclaw:
     image:  ghcr.io/ider-zh/openclaw-docker:main
-    build:
-      context: .
-      args:
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION}
+    build: .
     env_file:
       - .env
     volumes:
