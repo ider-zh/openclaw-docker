@@ -1,20 +1,31 @@
 services:
   openclaw-init:
-    build: .
+    image:  ghcr.io/ider-zh/openclaw-docker:main
+    build:
+      context: .
+      args:
+        OPENCLAW_VERSION: ${OPENCLAW_VERSION}
+    env_file:
+      - .env
     volumes:
-      - ./openclaw:/home/node/.openclaw
+      - ./openclaw:/home/node/.openclaw:z
       - ./bootstrap:/bootstrap
     command: bash /bootstrap/extensions_init.sh
 
   openclaw:
-    build: .
+    image:  ghcr.io/ider-zh/openclaw-docker:main
+    build:
+      context: .
+      args:
+        OPENCLAW_VERSION: ${OPENCLAW_VERSION}
+    env_file:
+      - .env
     volumes:
-      - ./openclaw:/home/node/.openclaw
+      - ./openclaw:/home/node/.openclaw:z
     depends_on:
       openclaw-init:
         condition: service_completed_successfully  
     command: openclaw gateway
     restart: unless-stopped
-    ports:
-      - "18789:18789"
-      - "18791:18791"
+    # ports:
+    #   - "18789:18789"

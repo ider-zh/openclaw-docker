@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "exampleVersion": "v2026.5.12",
+    "description": "Version-specific demo config for openclaw/openclaw.json"
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "/home/node/.openclaw/workspace",
+      "model": {
+        "primary": "toop/mimo-v2.5"
+      },
+      "models": {
+        "toop/mimo-v2.5": {}
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "YOUR_GATEWAY_TOKEN_HERE"
+    },
+    "port": 18789,
+    "bind": "lan"
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "toop": {
+        "baseUrl": "https://api.toop.ai/v1",
+        "api": "openai-completions",
+        "apiKey": "YOUR_API_KEY_HERE",
+        "models": [
+          {
+            "id": "mimo-v2.5",
+            "name": "mimo-v2.5 (Custom Provider)",
+            "contextWindow": 128000,
+            "maxTokens": 14096
+          }
+        ],
+        "request": {
+          "allowPrivateNetwork": true
+        }
+      }
+    }
+  },
+  "plugins": {
+    "allow": [
+      "dingtalk",
+      "openclaw-weixin",
+      "qqbot"
+    ],
+    "entries": {
+      "dingtalk": {
+        "enabled": true
+      },
+      "qqbot": {
+        "enabled": true
+      },
+      "openclaw-weixin": {
+        "enabled": true
+      }
+    }
+  },
+  "channels": {
+    "qqbot": {
+      "enabled": true,
+      "allowFrom": [
+        "*"
+      ],
+      "appId": "10322472",
+      "clientSecret": "A5h5FBkHbjexI"
+    },
+    "openclaw-weixin": {
+      "accounts": {},
+      "channelConfigUpdatedAt": "2026-05-18T00:30:00.357Z"
+    },
+    "dingtalk": {
+      "enabled": true,
+      "clientId": "ding4w99krb8bmqxn0",
+      "clientSecret": "A3hBl6HSojn4gIVFRUpqlLRf7sPYawfZjLjuRGSkhXfMRfJb7k7e1K-u5TveMI",
+      "dmPolicy": "open",
+      "groupPolicy": "open",
+      "messageType": "markdown"
+    }
+  }
+}
