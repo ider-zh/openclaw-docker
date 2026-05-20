@@ -12,9 +12,6 @@ ENV BUN_INSTALL="/usr/local" \
     PATH="/usr/local/bin:$PATH" \
     DEBIAN_FRONTEND=noninteractive
 
-# Allow openclaw version to be overridden at build time
-ARG OPENCLAW_VERSION=2026.5.12
-
 # 1. 合并系统依赖安装与全局工具安装，并清理缓存
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -37,6 +34,7 @@ RUN apt-get update && \
     procps \
     socat \
     tini \
+    ripgrep \
     unzip && \
     sed -i 's/^# *en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen && \
@@ -44,8 +42,14 @@ RUN apt-get update && \
     printf 'LANG=en_US.UTF-8\nLANGUAGE=en_US:en\nLC_ALL=en_US.UTF-8\n' > /etc/default/locale && \
     # 配置 git 使用 HTTPS 替代 SSH
     git config --system url."https://github.com/".insteadOf ssh://git@github.com/ && \
-    # 设置 npm 镜像并安装全局包
-    npm config set registry https://registry.npmmirror.com && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /root/.npm /root/.cache
+
+    
+# Allow openclaw version to be overridden at build time
+ARG OPENCLAW_VERSION=2026.5.18
+
+# 设置 npm 镜像并安装全局包
+ RUN npm config set registry https://registry.npmmirror.com && \
     npm install -g openclaw@${OPENCLAW_VERSION} opencode-ai@latest clawhub playwright playwright-extra puppeteer-extra-plugin-stealth @steipete/bird && \
     # 安装 bun、uv 和 qmd
     curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash && \

@@ -26,16 +26,5 @@
 - 问题：使用私有IP部署的 provider, 会出现 `SsrFBlockedError`。
 - 解决方案：添加 `models.providers.your_provider.request.allowPrivateNetwork: true`。
 
-### `openclaw/identity/device.json`
+### `openclaw/openclaw-weixin`
 - 备注: `openclaw-weixin` 凭证目录
-- example:
-```json
-{
-  "version": 1,
-  "deviceId": "string",
-  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nstring\n-----END PUBLIC KEY-----\n",
-  "privateKeyPem": "-----BEGIN PRIVATE KEY-----\nMstring\n-----END PRIVATE KEY-----\n",
-  "createdAtMs": 1779061595461
-}
-```
-
