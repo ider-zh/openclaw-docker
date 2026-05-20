@@ -56,7 +56,7 @@ ARG OPENCLAW_VERSION=2026.5.18
     curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh && \
     # 建立 python3 -> python 链接并安装 websockify
     ln -sf /usr/local/bin/python3 /usr/local/bin/python && \
-    /usr/local/bin/python3 -m pip install --no-cache-dir websockify && \
+    /usr/local/bin/python3 -m pip install --no-cache-dir websockify fastmcp boto3 && \
     npm install -g @tobilu/qmd && \
     # 安装 Playwright 浏览器依赖
     npx playwright install chromium --with-deps && \
