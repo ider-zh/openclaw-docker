@@ -1,6 +1,6 @@
 services:
   openclaw-init:
-    image:  ghcr.io/ider-zh/openclaw-docker:main
+    image:  ghcr.io/ider-zh/openclaw-docker:v2026.6.1
     build: .
     env_file:
       - .env
@@ -10,7 +10,7 @@ services:
     command: bash /bootstrap/extensions_init.sh
 
   openclaw:
-    image:  ghcr.io/ider-zh/openclaw-docker:main
+    image:  ghcr.io/ider-zh/openclaw-docker:v2026.6.1
     build: .
     env_file:
       - .env

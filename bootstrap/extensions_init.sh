@@ -65,4 +65,6 @@ cd /home/node/.openclaw/extensions
 install_if_missing @soimy/dingtalk dingtalk @soimy/dingtalk
 install_if_missing @tencent-connect/openclaw-qqbot@latest openclaw-qqbot @tencent-connect/openclaw-qqbot
 install_if_missing @tencent-weixin/openclaw-weixin openclaw-weixin @tencent-weixin/openclaw-weixin
+install_if_missing clawhub:@openclaw/diagnostics-otel diagnostics-otel clawhub:@openclaw/diagnostics-otel
+
   

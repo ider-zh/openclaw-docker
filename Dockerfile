@@ -46,7 +46,7 @@ RUN apt-get update && \
 
     
 # Allow openclaw version to be overridden at build time
-ARG OPENCLAW_VERSION=2026.5.22
+ARG OPENCLAW_VERSION=2026.6.1
 
 # 设置 npm 镜像并安装全局包
 RUN npm config set registry https://registry.npmmirror.com && \
