@@ -28,3 +28,5 @@
 
 ### `openclaw/openclaw-weixin`
 - 备注: `openclaw-weixin` 凭证目录
+
+### disable default skill

@@ -46,10 +46,10 @@ RUN apt-get update && \
 
     
 # Allow openclaw version to be overridden at build time
-ARG OPENCLAW_VERSION=2026.5.18
+ARG OPENCLAW_VERSION=2026.5.22
 
 # 设置 npm 镜像并安装全局包
- RUN npm config set registry https://registry.npmmirror.com && \
+RUN npm config set registry https://registry.npmmirror.com && \
     npm install -g openclaw@${OPENCLAW_VERSION} opencode-ai@latest clawhub playwright playwright-extra puppeteer-extra-plugin-stealth @steipete/bird && \
     # 安装 bun、uv 和 qmd
     curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash && \
@@ -79,6 +79,10 @@ RUN mkdir -p /home/node/.linuxbrew/Homebrew && \
     chmod -R g+rwX /home/node/.linuxbrew
 
     
+# install office cli
+RUN curl -fsSL https://raw.githubusercontent.com/iOfficeAI/OfficeCLI/main/install.sh | bash 
+
+
 # 设置环境变量
 ENV HOME=/home/node \
     TERM=xterm-256color \
